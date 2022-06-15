@@ -43,30 +43,38 @@ public class ChessMatch {
 		placeNewPiece('e', 8, new Rook(board, Color.BLACK));
 		placeNewPiece('d', 8, new King(board, Color.BLACK));
 	}
+
 	public ChessPiece performChessMove(ChessPosition sourcePosition, ChessPosition targetPosition) {
 		Position source = sourcePosition.toPosition();
 		Position target = targetPosition.toPosition();
-		
+
 		validateSourcePosition(source);
-		Piece capturedPiece = makeMove(source,target);
-		return (ChessPiece)capturedPiece;
+		validateTargetPosition(source,target);
+		Piece capturedPiece = makeMove(source, target);
+		return (ChessPiece) capturedPiece;
 	}
-	
+
 	private Piece makeMove(Position source, Position target) {
 		Piece p = board.removePiece(source);
 		Piece capturedPiece = board.removePiece(target);
-		
+
 		board.placePiece(p, target);
 		return p;
 	}
-	
+
 	private void validateSourcePosition(Position position) {
-		if(!board.thereIsAPiece(position)){
+		if (!board.thereIsAPiece(position)) {
 			throw new ChessException("Não há uma peça nessa posição");
 		}
-		if(!board.piece(position).isThereAnyPossibleMove()){
+		if (!board.piece(position).isThereAnyPossibleMove()) {
 			throw new ChessException("Não existe movimentos possiveis");
 		}
 	}
-	
+
+	private void validateTargetPosition(Position source, Position target) {
+		if(!board.piece(source).possibleMove(target)) {
+			throw new ChessException("Movimento não é possivel");
+		}
+		
+	}
 }
